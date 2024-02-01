@@ -7,12 +7,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Image from "next/image";
 
 // Define the props the ImageCard will accept
 interface ImageCardProps {
-  title: string;
+  title?: string;
   description?: string;
-  imageUrl: string;
+  imageUrl?: string;
 }
 
 const ImageCard: React.FC<ImageCardProps> = ({
@@ -21,22 +22,15 @@ const ImageCard: React.FC<ImageCardProps> = ({
   imageUrl,
 }) => {
   return (
-    <Card>
-      <CardContent>
+    <Card className="max-w-sm overflow-hidden shadow-2xl mx-auto my-8 bg-stone-50">
+      <CardContent className="flex justify-center items-center h-96">
         {/* Image */}
-        <img src={imageUrl} alt={title} />
-        {/* Title */}
-        <CardHeader>
-          <CardTitle>{title}</CardTitle>
-        </CardHeader>
-        {/* Description */}
-        {description && (
-          <CardDescription>
-            <p>{description}</p>
-          </CardDescription>
-        )}
+        <img
+          className="max-h-60 w-auto object-cover object-center p-4"
+          src={imageUrl}
+          alt={title}
+        />
       </CardContent>
-      <CardFooter>{/* You can add footer content here if needed */}</CardFooter>
     </Card>
   );
 };

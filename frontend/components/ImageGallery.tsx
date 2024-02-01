@@ -18,7 +18,7 @@ const ImageGallery: React.FC = () => {
     // Fetch images from the API
     const fetchImages = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/photos");
+        const response = await fetch("http://localhost:3001/api/images");
         const data = await response.json();
         setImages(data.photos);
       } catch (error) {
@@ -34,8 +34,8 @@ const ImageGallery: React.FC = () => {
       {images.map((image) => (
         <ImageCard
           key={image.id}
-          title={image.title}
-          description={image.description}
+          // title={image.title}
+          // description={image.description}
           imageUrl={image.url} // Adjust the property name based on API's response
         />
       ))}
