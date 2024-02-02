@@ -25,11 +25,14 @@ const ImageCard: React.FC<ImageCardProps> = ({
     <Card className="max-w-sm overflow-hidden shadow-2xl mx-auto my-8 bg-stone-50">
       <CardContent className="flex justify-center items-center h-96">
         {/* Image */}
-        <img
-          className="max-h-60 w-auto object-cover object-center p-4"
-          src={imageUrl}
-          alt={title}
-        />
+        <div className="overflow-hidden">
+          <img
+            src={imageUrl}
+            alt={title}
+            className="w-full transform transition duration-300 ease-in-out hover:scale-110 focus:scale-110" // Adding focus:scale-110 for keyboard navigation
+            tabIndex={0} // Make the image focusable
+          />
+        </div>
       </CardContent>
     </Card>
   );

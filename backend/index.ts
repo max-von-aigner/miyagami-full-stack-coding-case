@@ -19,8 +19,6 @@ const env: Env = {
   FLICKR_API_KEY: process.env.FLICKR_API_KEY || "",
 };
 
-console.log("Flickr API Key:", env.FLICKR_API_KEY);
-
 // Public Photo Feed Endpoint
 app.get("/api/images", async (req: Request, res: Response) => {
   try {
@@ -46,6 +44,37 @@ app.get("/api/images", async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error fetching images:", error);
     res.status(500).json({ error: "An error occurred while fetching images" });
+  }
+});
+
+//Photo search endpoint
+app.get("/api/search", async (req: Request, res: Response) => {
+  try {
+    const tags = req.query.tags; // Get the tags query parameter from the request
+    const tagmode = req.query.tagmode || "all"; // Get the tagmode parameter or default to 'all'
+    const format = "json";
+    const lang = "en-us"; // Default language
+
+    // Flickr public feed URL
+    const flickrPublicFeedUrl =
+      "https://www.flickr.com/services/feeds/photos_public.gne";
+
+    // Make an Axios GET request to the Flickr public feed with necessary parameters
+    const response = await axios.get(flickrPublicFeedUrl, {
+      params: {
+        tags: tags,
+        tagmode: tagmode,
+        format: format,
+        lang: lang,
+        nojsoncallback: 1, // This is to get a JSON response directly
+      },
+    });
+
+    // Send the Flickr feed data to the client
+    res.json(response.data);
+  } catch (error) {
+    console.error("Error searching images:", error);
+    res.status(500).json({ error: "An error occurred while searching images" });
   }
 });
 
