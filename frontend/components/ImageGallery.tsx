@@ -5,7 +5,8 @@ import React, { useState, useEffect } from "react";
 import ImageSearch from "./ImageSearch"; // Adjust the import path as needed
 import ImageCard from "./ImageCard"; // Assuming you have this component for displaying individual images
 import Navbar from "./Navbar";
-
+import ModeToggle from "./ModeToggle";
+import GridViewToggle from "./GridViewToggle";
 // Define the structure of the image data if not already defined
 interface ImageData {
   id: string;
@@ -60,7 +61,9 @@ const ImageGallery: React.FC = () => {
   return (
     <div>
       <Navbar className="flex">
+        <GridViewToggle />
         <ImageSearch onSearch={handleSearch} />
+        <ModeToggle />
       </Navbar>
 
       <div>
