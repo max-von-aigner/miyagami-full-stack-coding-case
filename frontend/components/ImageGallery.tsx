@@ -1,44 +1,81 @@
 "use client";
 
+// Import React and useState, useEffect hooks
 import React, { useState, useEffect } from "react";
-import ImageCard from "./ImageCard";
-
-// Define the structure of the image data
+import ImageSearch from "./ImageSearch"; // Adjust the import path as needed
+import ImageCard from "./ImageCard"; // Assuming you have this component for displaying individual images
+import Navbar from "./Navbar";
+import ModeToggle from "./ModeToggle";
+import GridViewToggle from "./GridViewToggle";
+// Define the structure of the image data if not already defined
 interface ImageData {
-  id: string; // Use a unique identifier for the key prop
+  id: string;
   title: string;
   description?: string;
-  url: string;
+  url: string; // Adjust according to the actual structure of your image data
 }
 
 const ImageGallery: React.FC = () => {
   const [images, setImages] = useState<ImageData[]>([]);
 
   useEffect(() => {
-    // Fetch images from the API
-    const fetchImages = async () => {
-      try {
-        const response = await fetch("http://localhost:3001/api/photos");
-        const data = await response.json();
-        setImages(data.photos);
-      } catch (error) {
-        console.error("Error fetching photos:", error);
-      }
-    };
-
+    // Initially fetch all images or display a default set
     fetchImages();
   }, []);
 
+  const fetchImages = async (tags?: string, tagmode: string = "all") => {
+    const apiUrl = tags
+      ? `http://localhost:3001/api/search?tags=${tags}&tagmode=${tagmode}`
+      : "http://localhost:3001/api/images";
+    try {
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+      let formattedImages;
+      if (tags) {
+        // Processing search results
+        formattedImages = data.items.map((item: any) => ({
+          id: item.link, // Extract ID or use another unique identifier
+          title: item.title,
+          description: item.description,
+          url: item.media.m,
+        }));
+      } else {
+        // Processing initial load
+        formattedImages = data.photos.map((photo: any) => ({
+          id: photo.id,
+          title: photo.title,
+          description: photo.description,
+          url: photo.url,
+        }));
+      }
+      setImages(formattedImages);
+    } catch (error) {
+      console.error("Error fetching images:", error);
+    }
+  };
+
+  const handleSearch = (tags: string, tagmode: string) => {
+    fetchImages(tags, tagmode);
+  };
+
   return (
     <div>
-      {images.map((image) => (
-        <ImageCard
-          key={image.id}
-          title={image.title}
-          description={image.description}
-          imageUrl={image.url} // Adjust the property name based on API's response
-        />
-      ))}
+      <Navbar className="flex">
+        <GridViewToggle />
+        <ImageSearch onSearch={handleSearch} />
+        <ModeToggle />
+      </Navbar>
+
+      <div>
+        {images.map((image) => (
+          <ImageCard
+            key={image.id}
+            title={image.title}
+            description={image.description}
+            imageUrl={image.url} // Adjust the property name based on your API's response structure
+          />
+        ))}
+      </div>
     </div>
   );
 };
