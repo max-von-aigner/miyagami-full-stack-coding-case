@@ -1,57 +1,167 @@
+// import express, { Request, Response } from "express";
+// import axios from "axios";
+// import cors from "cors";
+// import dotenv from "dotenv";
+// dotenv.config();
+
+// const app = express();
+// const port = 3001;
+
+// app.use(cors()); // Enable CORS
+
+// // Define an interface for the environment variables
+// interface Env {
+//   FLICKR_API_KEY: string;
+// }
+
+// // API KEY
+// const env: Env = {
+//   FLICKR_API_KEY: process.env.FLICKR_API_KEY || "",
+// };
+
+// app.get("/api/images", async (req: Request, res: Response) => {
+//   const page = req.query.page || 1;
+//   const perPage = req.query.per_page || 21;
+//   const extras = "description,tags,url_q";
+
+//   try {
+//     const apiUrl = `https://api.flickr.com/services/rest/`;
+//     const response = await axios.get(apiUrl, {
+//       params: {
+//         method: "flickr.photos.getRecent",
+//         api_key: env.FLICKR_API_KEY,
+//         extras: extras,
+//         per_page: perPage,
+//         page: page,
+//         format: "json",
+//         nojsoncallback: 1,
+//       },
+//     });
+
+//     const data = response.data;
+//     const images = data.photos.photo.map((photo: any) => ({
+//       id: photo.id,
+//       title: photo.title,
+//       description: photo.description._content,
+//       tags: photo.tags,
+//       url: photo.url_q,
+//     }));
+
+//     res.json({ images, pages: data.photos.pages });
+//   } catch (error) {
+//     console.error("Error fetching recent images from Flickr:", error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// });
+
+// //Photo search endpoint
+// app.get("/api/search", async (req, res) => {
+//   const { tags, tagmode = "any", page = 1, per_page = 21, text } = req.query;
+
+//   interface FlickrPhoto {
+//     id: string;
+//     title: string;
+//     server: string;
+//     secret: string;
+//   }
+
+//   try {
+//     const response = await axios.get(`https://api.flickr.com/services/rest/`, {
+//       params: {
+//         method: "flickr.photos.search",
+//         api_key: env.FLICKR_API_KEY,
+//         tags: tags,
+//         tag_mode: tagmode,
+//         safe_search: 1, // Enforce safe search
+//         per_page: per_page,
+//         page: page,
+//         format: "json",
+//         nojsoncallback: 1,
+//       },
+//     });
+//     const data = response.data;
+//     const images = data.photos.photo.map((photo: FlickrPhoto) => ({
+//       id: photo.id,
+//       title: photo.title,
+//       url: `https://live.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_q.jpg`, // Adjust size as needed
+//     }));
+
+//     res.json({ images, pages: data.photos.pages }); // Send the transformed data back to the client
+//   } catch (error) {
+//     console.error("Error fetching images from Flickr:", error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// });
+
+// app.listen(port, () => {
+//   console.log(`Server running at http://localhost:${port}`);
+// });
+
 import express, { Request, Response } from "express";
 import axios from "axios";
 import cors from "cors";
 import dotenv from "dotenv";
-dotenv.config();
+dotenv.config(); // Load environment variables from .env file
 
-const app = express();
-const port = 3001;
+const app = express(); // Create an Express application
+const port = 3001; // Define the port number to run the server on
 
-app.use(cors()); // Enable CORS
+app.use(cors()); // Enable Cross-Origin Resource Sharing (CORS) for all routes
 
-// Define an interface for the environment variables
+// Define an interface for the environment variables to ensure type safety
 interface Env {
-  FLICKR_API_KEY: string;
+  FLICKR_API_KEY: string; // Flickr API Key
 }
 
-// API KEY
+// Retrieve the API key from environment variables or default to an empty string
 const env: Env = {
   FLICKR_API_KEY: process.env.FLICKR_API_KEY || "",
 };
 
-// Public Photo Feed Endpoint
+// Endpoint to fetch recent images from Flickr
 app.get("/api/images", async (req: Request, res: Response) => {
+  // Extract page and per_page query parameters or default them
   const page = req.query.page || 1;
-  const perPage = req.query.per_page || 10;
+  const perPage = req.query.per_page || 21;
+  const extras = "description,tags,url_q"; // Additional fields to fetch for each photo
+
   try {
-    const flickrFeedUrl =
-      "https://www.flickr.com/services/feeds/photos_public.gne";
-    const response = await axios.get(flickrFeedUrl, {
+    // Construct the API URL for fetching recent photos
+    const apiUrl = `https://api.flickr.com/services/rest/`;
+    // Make a request to the Flickr API
+    const response = await axios.get(apiUrl, {
       params: {
-        format: "json",
-        nojsoncallback: 1, // Include this to get a pure JSON response
+        method: "flickr.photos.getRecent",
+        api_key: env.FLICKR_API_KEY,
+        extras: extras,
+        per_page: perPage,
         page: page,
-        per_page: perPage, // Add any other necessary query parameters here
+        format: "json",
+        nojsoncallback: 1,
       },
     });
 
-    // Extract and transform the data to match your frontend structure
-    const images = response.data.items.map((item: any) => ({
-      id: item.link.match(/\/(\d+)\//)[1], // Extract the photo ID from the link
-      title: item.title,
-      description: item.description,
-      url: item.media.m, // Adjust based on the available image URLs
+    // Transform the API response to the desired format
+    const data = response.data;
+    const images = data.photos.photo.map((photo: any) => ({
+      id: photo.id,
+      title: photo.title,
+      description: photo.description._content,
+      tags: photo.tags,
+      url: photo.url_q, // URL of the photo
     }));
 
-    res.json({ photos: images });
+    // Send the transformed data back to the client
+    res.json({ images, pages: data.photos.pages });
   } catch (error) {
-    console.error("Error fetching images:", error);
-    res.status(500).json({ error: "An error occurred while fetching images" });
+    console.error("Error fetching recent images from Flickr:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
-//Photo search endpoint
+// Endpoint to search for images based on tags
 app.get("/api/search", async (req, res) => {
+  // Extract query parameters including tags, tag mode, page, per_page, and text
   const { tags, tagmode = "any", page = 1, per_page = 21, text } = req.query;
 
   interface FlickrPhoto {
@@ -61,20 +171,31 @@ app.get("/api/search", async (req, res) => {
     secret: string;
   }
 
-  // Construct the URL for the Flickr API call
-  const apiUrl = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=YOUR_API_KEY&tags=${tags}&tag_mode=${tagmode}&text=${text}&per_page=${per_page}&page=${page}&format=json&nojsoncallback=1`;
-
   try {
-    const response = await fetch(apiUrl);
-    const data = await response.json();
+    // Make a request to the Flickr API for searching photos
+    const response = await axios.get(`https://api.flickr.com/services/rest/`, {
+      params: {
+        method: "flickr.photos.search",
+        api_key: env.FLICKR_API_KEY,
+        tags: tags,
+        tag_mode: tagmode,
+        safe_search: 1, // Enforce safe search to filter out inappropriate content
+        per_page: per_page,
+        page: page,
+        format: "json",
+        nojsoncallback: 1,
+      },
+    });
 
-    // Transform the data as needed before sending it to the frontend
+    // Transform the API response to the desired format
+    const data = response.data;
     const images = data.photos.photo.map((photo: FlickrPhoto) => ({
       id: photo.id,
       title: photo.title,
-      url: `https://live.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_q.jpg`, // Example URL format, adjust if using different size
+      url: `https://live.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_q.jpg`, // Constructed image URL
     }));
 
+    // Send the transformed data back to the client
     res.json({ images, pages: data.photos.pages });
   } catch (error) {
     console.error("Error fetching images from Flickr:", error);
@@ -82,6 +203,7 @@ app.get("/api/search", async (req, res) => {
   }
 });
 
+// Start the Express server
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
