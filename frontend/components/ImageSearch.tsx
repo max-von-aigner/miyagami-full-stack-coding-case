@@ -1,8 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import MotionButton from "./MotionButton";
+import MotionInput from "./MotionInput";
 
 interface ImageSearchProps {
   onSearch: (tags: string, tagmode: string) => void; // Updated to expect two parameters
@@ -10,41 +13,64 @@ interface ImageSearchProps {
 
 const ImageSearch: React.FC<ImageSearchProps> = ({ onSearch }) => {
   const [tags, setTags] = useState<string>("");
+  const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false); // State to control visibility
+  const inputRef = useRef<HTMLInputElement>(null); // Ref for the input element
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSearch(tags, "all"); // Example of calling onSearch with both parameters
   };
 
+  // const toggleSearchVisibility = () => setIsSearchVisible(!isSearchVisible); // Function to toggle visibility
+
+  const toggleSearchVisibility = () => {
+    setIsSearchVisible(!isSearchVisible);
+    // Additional logic to focus only when showing the search bar
+    if (!isSearchVisible) {
+      // setTimeout ensures focus logic is pushed to the end of the event queue,
+      // allowing the input to be mounted before attempting to focus.
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
+    }
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="flex w-full max-w-sm items-center">
-      <Input
-        type="text"
-        value={tags}
-        onChange={(e) => setTags(e.target.value)}
-        placeholder="Search"
-        className=" rounded-full bg-stone-50 hover:bg-slate-100 "
-      />
-      {/* <Button type="submit" className="bg-white/0 text-black">
-        Search
-      </Button> */}
-      <Button type="submit" className="bg-white/0 text-black w-8 p-0">
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
+    <div className="flex">
+      <MotionButton
+        variant="outline"
+        size="icon"
+        className="bg-transparent border-transparent hover:bg-transparent"
+        onClick={toggleSearchVisibility} // Use the button to toggle the search bar visibility
+        whileHover={{ scale: 1.2 }}
+        whileTap={{ scale: 0.9 }}
+        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+      >
+        <MagnifyingGlassIcon className="scale-125 stroke-primary" />
+      </MotionButton>
+      {isSearchVisible && ( // Conditionally render the Input based on isSearchVisible state
+        <form
+          onSubmit={handleSubmit}
+          className="flex max-w-sm items-center order-first"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-          ></path>
-        </svg>
-      </Button>
-    </form>
+          <MotionInput
+            ref={inputRef}
+            type="text"
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
+            placeholder="Search"
+            className=" max-w-36 rounded-full  outline-none dark:bg-slate-800/60 border-transparent bg-orange-200/80 hover:bg-orange-200/95 dark:hover:bg-accent hover:text-accent-foreground"
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            transition={{
+              duration: 0.7,
+              ease: "easeOut",
+              type: "spring",
+            }}
+          />
+        </form>
+      )}
+    </div>
   );
 };
 
