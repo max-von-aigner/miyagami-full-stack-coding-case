@@ -1,38 +1,38 @@
 import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import Image from "next/image";
-import ImageCardSkeleton from "./ImageCardSkeleton";
-// Define the props the ImageCard will accept
+import { Card, CardContent } from "@/components/ui/card"; // Importing card components for structured layout
+import { Skeleton } from "./ui/skeleton"; // Importing Skeleton for loading placeholder
+
+// Interface to define the types of props ImageCard component will accept
 interface ImageCardProps {
-  title?: string;
-  description?: string;
-  imageUrl?: string;
-  isLoading?: boolean; // Add a loading prop
+  title?: string; // Optional title for the image
+  description?: string; // Optional description for the image (not used in the component but defined)
+  imageUrl?: string; // Optional URL for the image source
+  isLoading?: boolean; // Boolean to determine if the image is in the loading state
 }
 
 const ImageCard: React.FC<ImageCardProps> = ({
   title,
   imageUrl,
-  isLoading = false, // Default loading to false
+  isLoading = false, // Default loading state to false
 }) => {
-  // Use the ternary operator directly inside the return statement
+  // Conditional rendering based on isLoading prop
   return isLoading ? (
-    <Card className="w-full sm:w-40 sm:h-48 md:w-80 md:h-96 overflow-hidden shadow-2xl dark-shadow-2xl mx-auto my-4 ">
-      <CardContent className="w-full ml-0">
-        <ImageCardSkeleton className="w-full sm:w-40 sm:h-48 md:w-80 md:h-96 overflow-hidden shadow-2xl dark-shadow-2xl mx-auto my-8 h-full">
-          <ImageCardSkeleton />
-        </ImageCardSkeleton>
-      </CardContent>
-    </Card>
+    // Render Skeleton component when the image is loading
+    <div className="w-full mx-auto my-4 overflow-hidden shadow-2xl opacity-100 sm:w-40 sm:h-48 md:w-80 md:h-96 dark-shadow-2xl rounded-xl">
+      <Skeleton className="flex items-center justify-center w-full h-full">
+        <div className="z-30 bg-gray-200 sm:w-24 sm:h-32 md:w-48 md:h-52 animate-pulse" />
+      </Skeleton>
+    </div>
   ) : (
-    <Card className="w-full sm:w-40 sm:h-48 md:w-80 md:h-96 overflow-hidden shadow-2xl dark-shadow-2xl mx-auto dark:bg-gradient-to-b from-indigo-500 to-red-500 dark:bg-stone-900 dark:border-zinc-950">
-      <CardContent className="flex justify-center items-center h-full m-3">
+    // Render the actual image card when the image is loaded
+    <Card className="w-full mx-auto overflow-hidden shadow-2xl sm:w-40 sm:h-48 md:w-80 md:h-96 dark-shadow-2xl dark:bg-gradient-to-b from-indigo-500 to-red-500 dark:bg-stone-900 dark:border-zinc-950 rounded-xl">
+      <CardContent className="z-20 flex items-center justify-center h-full m-3">
         <div className="flex overflow-hidden shadow-lg">
           <img
-            src={imageUrl}
-            alt={title}
-            className="shrink transform transition duration-300 ease-in-out hover:scale-110 focus:scale-110" // Adding focus:scale-110 for keyboard navigation
-            tabIndex={0} // Make the image focusable
+            src={imageUrl} // Image source URL
+            alt={title} // Alt text for the image
+            className="transition duration-300 ease-in-out transform shrink hover:scale-110 focus:scale-110" // CSS classes for styling and interaction effects
+            tabIndex={0} // Make the image focusable for accessibility
           />
         </div>
       </CardContent>
