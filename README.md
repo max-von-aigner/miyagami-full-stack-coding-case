@@ -4,7 +4,7 @@ This project is a full-stack web application that interfaces with Flickr's publi
 
 ## Purpose
 
-The purpose of this project is to demonstrate coding abilities, technical experience, and design solutions for a Full Stack JavaScript role at Miyagami.
+The purpose of this project is to demonstrate coding abilities, technical experience, and design solutions for a Full-Stack Engineer role at Miyagami.
 
 ## Project Structure
 
