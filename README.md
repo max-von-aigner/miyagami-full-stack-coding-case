@@ -29,12 +29,13 @@ The purpose of this project is to demonstrate coding abilities, technical experi
 - Dark mode support for reduced eye strain and improved accessibility.
 - Ability to toggle between grid and list view modes for displaying images.
 - Framer Motion animations enhance the user experience by providing smooth and engaging visual feedback.
-- Animated Navbar for a modern experience.
+- The Navbar hides automatically, when the user scrolls the page contend.
 
 ## Notes
 
-- Despite the search button being a required feauture, I decided against implementing a seaparate button, as the UX is good with triggering the search via the enyer key
-- I decided to not implement the public feed, as it contained a lot of graphic imapges, such as nudity and porn. Flickr's safe search filter is enabled by default, but there was just to much NSFW-content coming through the API, to deploy this publicly. I acces the photos via the photos endpoint with the getRecent methond and then the results are sorted by "interesteingness descending" to improve the content quality and overall experience.
+-Despite the search button being initially considered a necessary feature, I opted not to implement a separate button, finding that the user experience remains intuitive and streamlined when triggering searches via the enter key.
+
+-I also decided against incorporating the public feed due to the prevalence of graphic images, including nudity and explicit content. Although Flickr's safe search filter is activated by default, an excessive amount of not-safe-for-work (NSFW) content was still filtering through the API, making it unsuitable for public deployment. Instead, I access photos through the endpoint using the getRecent method, with results sorted by "interestingness descending." This approach enhances content quality and enriches the overall user experience.
 
 ## Live Demo and Source Code
 
