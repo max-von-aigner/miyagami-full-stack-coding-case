@@ -31,6 +31,11 @@ The purpose of this project is to demonstrate coding abilities, technical experi
 - Framer Motion animations enhance the user experience by providing smooth and engaging visual feedback.
 - Animated Navbar for a modern experience.
 
+## Notes
+
+- Despite the search button being a required feauture, I decided against implementing a seaparate button, as the UX is good with triggering the search via the enyer key
+- I decided to not implement the public feed, as it contained a lot of graphic imapges, such as nudity and porn. Flickr's safe search filter is enabled by default, but there was just to much NSFW-content coming through the API, to deploy this publicly. I acces the photos via the photos endpoint with the getRecent methond and then the results are sorted by "interesteingness descending" to improve the content quality and overall experience.
+
 ## Live Demo and Source Code
 
 - Live Demo: [Link to live demo](#)
