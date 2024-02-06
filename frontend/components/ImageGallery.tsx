@@ -35,10 +35,12 @@ const ImageGallery: React.FC = () => {
   const fetchImages = async (tags?: string, page: number = 1) => {
     setIsLoading(true); // Start loading process
     const perPage = 21; // Define number of images to fetch per page
+
+    const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
     // Determine API URL based on whether tags are provided for search or fetching general images
     const apiUrl = tags
-      ? `http://localhost:3001/api/search?tags=${tags}&page=${page}&per_page=${perPage}`
-      : `http://localhost:3001/api/images?page=${page}&per_page=${perPage}`;
+      ? `${API_BASE_URL}/api/search?tags=${tags}&page=${page}&per_page=${perPage}`
+      : `${API_BASE_URL}/api/images?page=${page}&per_page=${perPage}`;
     try {
       const response = await fetch(apiUrl); // Fetch data from API
       const data = await response.json(); // Parse JSON response
