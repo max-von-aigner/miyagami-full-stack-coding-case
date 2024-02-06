@@ -18,6 +18,15 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        poppins: ["Poppins", "sans-serif"],
+      },
+      screens: {
+        xs: "420px",
+        xxs: "230px",
+        "grid-breakpoint": "1150px",
+        "xl-grid-breakpoint": "1475px",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

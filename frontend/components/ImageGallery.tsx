@@ -35,10 +35,13 @@ const ImageGallery: React.FC = () => {
   const fetchImages = async (tags?: string, page: number = 1) => {
     setIsLoading(true); // Start loading process
     const perPage = 21; // Define number of images to fetch per page
+
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
     // Determine API URL based on whether tags are provided for search or fetching general images
+    console.log("API BASE URL: ", API_BASE_URL);
     const apiUrl = tags
-      ? `http://localhost:3001/api/search?tags=${tags}&page=${page}&per_page=${perPage}`
-      : `http://localhost:3001/api/images?page=${page}&per_page=${perPage}`;
+      ? `${API_BASE_URL}/api/search?tags=${tags}&page=${page}&per_page=${perPage}`
+      : `${API_BASE_URL}/api/images?page=${page}&per_page=${perPage}`;
     try {
       const response = await fetch(apiUrl); // Fetch data from API
       const data = await response.json(); // Parse JSON response
@@ -84,21 +87,28 @@ const ImageGallery: React.FC = () => {
   // Render the component
   return (
     <div>
-      <Navbar logo={<Logo />} className="flex">
-        <ImageSearch onSearch={handleSearch} />
-        <GridViewToggle
-          setLayoutMode={setLayoutMode}
-          layoutMode={layoutMode}
-        />{" "}
-        <ModeToggle />
+      <Navbar className="items-center">
+        <div className="flex flex-col md:flex-row items-center justify-between w-full py-4 px-5">
+          <div className="flex justify-center md:justify-start items-center w-full md:w-auto">
+            <Logo />
+          </div>
+          <div className="flex justify-center md:justify-end items-center w-full md:w-auto  md:mt-0 space-x-2">
+            <ImageSearch onSearch={handleSearch} />
+            <GridViewToggle
+              setLayoutMode={setLayoutMode}
+              layoutMode={layoutMode}
+            />
+            <ModeToggle />
+          </div>
+        </div>
       </Navbar>
 
       {/* Display images in either grid or list layout based on layoutMode state */}
       <div
         className={
           layoutMode === "grid"
-            ? "grid grid-cols-3 gap-16"
-            : "flex flex-col gap-16"
+            ? "grid grid-cols-1 gap-8 md:gap-16 md:grid-cols-2 sm:gap-16 grid-breakpoint:grid-cols-3 xl-grid-breakpoint:grid-cols-4"
+            : "flex flex-col gap-8 md:gap-16"
         }
       >
         {images.map((image) => (
@@ -107,8 +117,6 @@ const ImageGallery: React.FC = () => {
             title={image.title}
             imageUrl={image.url}
             isLoading={isLoading}
-            // width={image.width}
-            // height={image.height}
           />
         ))}
       </div>
@@ -123,3 +131,44 @@ const ImageGallery: React.FC = () => {
 };
 
 export default ImageGallery;
+
+//  // Render the component
+//  return (
+//   <div>
+//     <Navbar logo={<Logo />} className="flex">
+//       <ImageSearch onSearch={handleSearch} />
+//       <GridViewToggle
+//         setLayoutMode={setLayoutMode}
+//         layoutMode={layoutMode}
+//       />{" "}
+//       <ModeToggle />
+//     </Navbar>
+
+//     {/* Display images in either grid or list layout based on layoutMode state */}
+//     <div
+//       className={
+//         layoutMode === "grid"
+//           ? "grid xxs:grid-cols-2 sm:grid-cols-3 xxs:gap-2 sm:gap-16"
+//           : "flex flex-col gap-16"
+//       }
+//     >
+//       {images.map((image) => (
+//         <ImageCard
+//           key={image.id}
+//           title={image.title}
+//           imageUrl={image.url}
+//           isLoading={isLoading}
+//           // width={image.width}
+//           // height={image.height}
+//         />
+//       ))}
+//     </div>
+//     {/* Conditionally render LoadMoreButton if not in loading state */}
+//     {!isLoading && (
+//       <div className="flex justify-center my-8">
+//         <LoadMoreButton onClick={handleLoadMore} />
+//       </div>
+//     )}
+//   </div>
+// );
+// };

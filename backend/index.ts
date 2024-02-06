@@ -19,7 +19,7 @@ const env: Env = {
   FLICKR_API_KEY: process.env.FLICKR_API_KEY || "",
 };
 
-const FLICKR_EXTRAS = "url_q,o_dims,description,tags";
+const FLICKR_EXTRAS = "url_z,o_dims,description,tags";
 
 // Endpoint to fetch recent images from Flickr
 app.get("/api/images", async (req: Request, res: Response) => {
@@ -46,7 +46,6 @@ app.get("/api/images", async (req: Request, res: Response) => {
 
     // Transform the API response to the desired format
     const data = response.data;
-    console.log("getRecent API raw response: ", data);
     const images = data.photos.photo.map((photo: any) => ({
       id: photo.id,
       title: photo.title,
@@ -78,8 +77,9 @@ app.get("/api/search", async (req, res) => {
   }
 
   try {
+    const apiUrl = `https://api.flickr.com/services/rest/`;
     // Make a request to the Flickr API for searching photos
-    const response = await axios.get(`https://api.flickr.com/services/rest/`, {
+    const response = await axios.get(apiUrl, {
       params: {
         method: "flickr.photos.search",
         api_key: env.FLICKR_API_KEY,
@@ -98,9 +98,6 @@ app.get("/api/search", async (req, res) => {
 
     // Transform the API response to the desired format
     const data = response.data;
-    console.log("search API raw response: ", data);
-    // Log the first photo object to see its structure
-    console.log("First photo data:", response.data.photos.photo[0]);
     const images = data.photos.photo.map((photo: FlickrPhoto) => ({
       id: photo.id,
       title: photo.title,

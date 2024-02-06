@@ -29,10 +29,8 @@ const ImageCard: React.FC<ImageCardProps> = ({
     </div>
   ) : (
     // Render the actual image card when the image is loaded
-    <Card className="w-full flex items-center justify-center h-full mx-auto  pt-8 pb-16 overflow-hidden shadow-2xl sm:w-40 sm:h-48 md:w-80 md:h-96 dark-shadow-2xl dark:bg-gradient-to-b from-indigo-500 to-red-500 dark:bg-stone-900 dark:border-zinc-950 rounded-xl">
-      {/* <CardContent className="z-20 flex items-center justify-center h-full m-3"> */}
-
-      <div className="relative bg-transparent flex items-start mx-8  justify-center w-full h-full  overflow-hidden align-middle">
+    <Card className="xxs:w-40 xxs:h-48 xs:w-80 xs:h-96 flex items-center justify-center mx-auto xs:pt-8 xs:pb-16 xxs:pt-4 xxs:pb-8 overflow-hidden shadow-2xl dark-shadow-2xl dark:bg-gradient-to-b from-blue-900 to-purple-800 dark:bg-stone-900 dark:border-zinc-950 rounded-xl">
+      <div className="relative bg-transparent flex items-start  xxs:mx-4 xxs:pt-8 xs:mx-8 xs:pt-16 justify-center w-full h-full overflow-hidden align-middle">
         {imageUrl && (
           <Image
             src={imageUrl}
@@ -46,9 +44,10 @@ const ImageCard: React.FC<ImageCardProps> = ({
           />
         )}
       </div>
-      {/* </CardContent> */}
     </Card>
   );
 };
 
 export default ImageCard;
+
+// xxs:w-20 xxs:-h24 sm:w-40 sm:h-48 grid-breakpoint:w-80 grid-breakpoint:h-96 sm:pt-4 sm:pb-8 grid-breakpoint:pt-8 grid-breakpoint:pb-16
