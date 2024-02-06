@@ -14,6 +14,8 @@ interface ImageData {
   id: string; // Unique identifier for each image
   title: string; // Title of the image
   url: string; // URL of the image source
+  // width?: number;
+  // height?: number;
 }
 
 const ImageGallery: React.FC = () => {
@@ -46,6 +48,8 @@ const ImageGallery: React.FC = () => {
         id: item.id,
         title: item.title,
         url: item.url,
+        // width: parseInt(item.width_o), // Assuming 'width_o' is the property name provided by the API for the original width
+        // height: parseInt(item.height_o),
       }));
 
       console.log("New images array:", newImages); // Log new images array for debugging
@@ -103,6 +107,8 @@ const ImageGallery: React.FC = () => {
             title={image.title}
             imageUrl={image.url}
             isLoading={isLoading}
+            // width={image.width}
+            // height={image.height}
           />
         ))}
       </div>
