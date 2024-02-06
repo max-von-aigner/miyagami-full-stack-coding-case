@@ -1,102 +1,3 @@
-// import express, { Request, Response } from "express";
-// import axios from "axios";
-// import cors from "cors";
-// import dotenv from "dotenv";
-// dotenv.config();
-
-// const app = express();
-// const port = 3001;
-
-// app.use(cors()); // Enable CORS
-
-// // Define an interface for the environment variables
-// interface Env {
-//   FLICKR_API_KEY: string;
-// }
-
-// // API KEY
-// const env: Env = {
-//   FLICKR_API_KEY: process.env.FLICKR_API_KEY || "",
-// };
-
-// app.get("/api/images", async (req: Request, res: Response) => {
-//   const page = req.query.page || 1;
-//   const perPage = req.query.per_page || 21;
-//   const extras = "description,tags,url_q";
-
-//   try {
-//     const apiUrl = `https://api.flickr.com/services/rest/`;
-//     const response = await axios.get(apiUrl, {
-//       params: {
-//         method: "flickr.photos.getRecent",
-//         api_key: env.FLICKR_API_KEY,
-//         extras: extras,
-//         per_page: perPage,
-//         page: page,
-//         format: "json",
-//         nojsoncallback: 1,
-//       },
-//     });
-
-//     const data = response.data;
-//     const images = data.photos.photo.map((photo: any) => ({
-//       id: photo.id,
-//       title: photo.title,
-//       description: photo.description._content,
-//       tags: photo.tags,
-//       url: photo.url_q,
-//     }));
-
-//     res.json({ images, pages: data.photos.pages });
-//   } catch (error) {
-//     console.error("Error fetching recent images from Flickr:", error);
-//     res.status(500).json({ message: "Internal server error" });
-//   }
-// });
-
-// //Photo search endpoint
-// app.get("/api/search", async (req, res) => {
-//   const { tags, tagmode = "any", page = 1, per_page = 21, text } = req.query;
-
-//   interface FlickrPhoto {
-//     id: string;
-//     title: string;
-//     server: string;
-//     secret: string;
-//   }
-
-//   try {
-//     const response = await axios.get(`https://api.flickr.com/services/rest/`, {
-//       params: {
-//         method: "flickr.photos.search",
-//         api_key: env.FLICKR_API_KEY,
-//         tags: tags,
-//         tag_mode: tagmode,
-//         safe_search: 1, // Enforce safe search
-//         per_page: per_page,
-//         page: page,
-//         format: "json",
-//         nojsoncallback: 1,
-//       },
-//     });
-//     const data = response.data;
-//     const images = data.photos.photo.map((photo: FlickrPhoto) => ({
-//       id: photo.id,
-//       title: photo.title,
-//       url: `https://live.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_q.jpg`, // Adjust size as needed
-//     }));
-
-//     res.json({ images, pages: data.photos.pages }); // Send the transformed data back to the client
-//   } catch (error) {
-//     console.error("Error fetching images from Flickr:", error);
-//     res.status(500).json({ message: "Internal server error" });
-//   }
-// });
-
-// app.listen(port, () => {
-//   console.log(`Server running at http://localhost:${port}`);
-// });
-
 import express, { Request, Response } from "express";
 import axios from "axios";
 import cors from "cors";
@@ -118,12 +19,13 @@ const env: Env = {
   FLICKR_API_KEY: process.env.FLICKR_API_KEY || "",
 };
 
+const FLICKR_EXTRAS = "url_q,o_dims,description,tags";
+
 // Endpoint to fetch recent images from Flickr
 app.get("/api/images", async (req: Request, res: Response) => {
   // Extract page and per_page query parameters or default them
   const page = req.query.page || 1;
   const perPage = req.query.per_page || 21;
-  const extras = "description,tags,url_q"; // Additional fields to fetch for each photo
 
   try {
     // Construct the API URL for fetching recent photos
@@ -133,7 +35,8 @@ app.get("/api/images", async (req: Request, res: Response) => {
       params: {
         method: "flickr.photos.getRecent",
         api_key: env.FLICKR_API_KEY,
-        extras: extras,
+        sort: "interestingness-desc", // Sort by interestingness
+        extras: FLICKR_EXTRAS,
         per_page: perPage,
         page: page,
         format: "json",
@@ -143,12 +46,15 @@ app.get("/api/images", async (req: Request, res: Response) => {
 
     // Transform the API response to the desired format
     const data = response.data;
+    console.log("getRecent API raw response: ", data);
     const images = data.photos.photo.map((photo: any) => ({
       id: photo.id,
       title: photo.title,
       description: photo.description._content,
       tags: photo.tags,
-      url: photo.url_q, // URL of the photo
+      url: photo.url_z, // URL of the photo
+      width: photo.width_o, // Get image size to retain original aspect ratio when rendering
+      height: photo.height_o,
     }));
 
     // Send the transformed data back to the client
@@ -179,7 +85,10 @@ app.get("/api/search", async (req, res) => {
         api_key: env.FLICKR_API_KEY,
         tags: tags,
         tag_mode: tagmode,
+
+        sort: "interestingness-desc", // Sort by interestingness to address safe search issue and improve quality of images displayed
         safe_search: 1, // Enforce safe search to filter out inappropriate content
+        extras: FLICKR_EXTRAS, // Include extras
         per_page: per_page,
         page: page,
         format: "json",
@@ -189,10 +98,13 @@ app.get("/api/search", async (req, res) => {
 
     // Transform the API response to the desired format
     const data = response.data;
+    console.log("search API raw response: ", data);
+    // Log the first photo object to see its structure
+    console.log("First photo data:", response.data.photos.photo[0]);
     const images = data.photos.photo.map((photo: FlickrPhoto) => ({
       id: photo.id,
       title: photo.title,
-      url: `https://live.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_q.jpg`, // Constructed image URL
+      url: `https://live.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_z.jpg`, // Constructed image URL
     }));
 
     // Send the transformed data back to the client

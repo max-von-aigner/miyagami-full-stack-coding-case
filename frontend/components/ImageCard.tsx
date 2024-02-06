@@ -1,13 +1,17 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card"; // Importing card components for structured layout
 import { Skeleton } from "./ui/skeleton"; // Importing Skeleton for loading placeholder
+import Image from "next/image";
 
 // Interface to define the types of props ImageCard component will accept
 interface ImageCardProps {
-  title?: string; // Optional title for the image
+  title?: string | undefined; // Optional title for the image
   description?: string; // Optional description for the image (not used in the component but defined)
   imageUrl?: string; // Optional URL for the image source
   isLoading?: boolean; // Boolean to determine if the image is in the loading state
+  src?: string | undefined;
+  width?: number;
+  height?: number;
 }
 
 const ImageCard: React.FC<ImageCardProps> = ({
@@ -25,17 +29,24 @@ const ImageCard: React.FC<ImageCardProps> = ({
     </div>
   ) : (
     // Render the actual image card when the image is loaded
-    <Card className="w-full mx-auto overflow-hidden shadow-2xl sm:w-40 sm:h-48 md:w-80 md:h-96 dark-shadow-2xl dark:bg-gradient-to-b from-indigo-500 to-red-500 dark:bg-stone-900 dark:border-zinc-950 rounded-xl">
-      <CardContent className="z-20 flex items-center justify-center h-full m-3">
-        <div className="flex overflow-hidden shadow-lg">
-          <img
-            src={imageUrl} // Image source URL
-            alt={title} // Alt text for the image
-            className="transition duration-300 ease-in-out transform shrink hover:scale-110 focus:scale-110" // CSS classes for styling and interaction effects
-            tabIndex={0} // Make the image focusable for accessibility
+    <Card className="w-full flex items-center justify-center h-full mx-auto  pt-8 pb-16 overflow-hidden shadow-2xl sm:w-40 sm:h-48 md:w-80 md:h-96 dark-shadow-2xl dark:bg-gradient-to-b from-indigo-500 to-red-500 dark:bg-stone-900 dark:border-zinc-950 rounded-xl">
+      {/* <CardContent className="z-20 flex items-center justify-center h-full m-3"> */}
+
+      <div className="relative bg-transparent flex items-start mx-8  justify-center w-full h-full  overflow-hidden align-middle">
+        {imageUrl && (
+          <Image
+            src={imageUrl}
+            alt={title || ""}
+            // width={width || 200} // Use the original width or fallback to auto if not provided
+            // height={height || 200} // Use the original height or fallback to auto if not provided
+            layout="fill"
+            objectFit="contain"
+            quality={100}
+            className="items-center transition duration-300 ease-in-out transform shrink hover:scale-110 focus:scale-110 shadow-lg"
           />
-        </div>
-      </CardContent>
+        )}
+      </div>
+      {/* </CardContent> */}
     </Card>
   );
 };
