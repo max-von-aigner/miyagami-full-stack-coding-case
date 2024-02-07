@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config(); // Load environment variables from .env file
 
 const app = express(); // Create an Express application
-const port = 3001; // Define the port number to run the server on
+const port = process.env.PORT && 3001; // Define the port number to run the server on
 
 app.use(cors()); // Enable Cross-Origin Resource Sharing (CORS) for all routes
 
