@@ -39,14 +39,14 @@ The purpose of this project is to demonstrate coding abilities, technical experi
 
 ## Live Demo and Source Code
 
-- Live Demo: [Link to live demo](#)
-- Source Code: [GitHub Repository](https://github.com/<username>/<repository>)
+- Live App: https://shutter-stream.vercel.app/
+- Source Code: [GitHub Repository](https://github.com/max-von-aigner/miyagami-full-stack-coding-case)
 
 ## Setup and Installation
 
 1. **Clone the repository:**
 
-git clone https://github.com/<username>/<repository>.git
+git clone https://github.com/max-von-aigner/miyagami-full-stack-coding-case.git
 
 cd backend
 npm install
@@ -61,4 +61,4 @@ npm install
 5. **Start the Next.js development server:**
    npm run dev
 
-6. **Open your browser and go to `http://localhost:3000` to view the app.**
+6. **Open your browser and go to `http://localhost:3000` to run the app locally.**

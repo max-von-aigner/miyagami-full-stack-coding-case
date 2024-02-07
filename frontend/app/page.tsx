@@ -1,6 +1,5 @@
 import React from "react";
 import ImageGallery from "@/components/ImageGallery";
-import ImageSearch from "@/components/ImageSearch";
 import Navbar from "@/components/Navbar";
 
 export default function Home() {
