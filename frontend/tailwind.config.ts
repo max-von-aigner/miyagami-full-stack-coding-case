@@ -19,7 +19,7 @@ const config = {
     },
     extend: {
       fontFamily: {
-        poppins: ["Poppins", "sans-serif"],
+        poppins: ["var(--font-poppins)"],
       },
       screens: {
         xs: "420px",

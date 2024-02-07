@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+
+const poppins = Poppins({
+  subsets: ["latin", "devanagari"],
+  weight: ["400", "600", "800"],
+  variable: "--font-poppins",
+});
 
 export const metadata: Metadata = {
   title: "shutter stream",
@@ -16,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${poppins.variable}`}>
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"
