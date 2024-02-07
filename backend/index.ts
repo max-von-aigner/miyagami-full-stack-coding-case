@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config(); // Load environment variables from .env file
 
 const app = express(); // Create an Express application
-const port = process.env.PORT && 3001; // Define the port number to run the server on
+const port = process.env.PORT || 3001; // Define the port number to run the server on
 
 app.use(cors()); // Enable Cross-Origin Resource Sharing (CORS) for all routes
 
@@ -114,5 +114,5 @@ app.get("/api/search", async (req, res) => {
 
 // Start the Express server
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+  console.log(`Server running at port ${port}`);
 });
