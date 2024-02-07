@@ -1,5 +1,3 @@
-// LoadMoreButton.tsx
-
 import React from "react";
 import MotionButton from "./MotionButton";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
